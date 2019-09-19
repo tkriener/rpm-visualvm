@@ -1,26 +1,34 @@
-# Defined by the caller (ie the script):
-# downloaded_dir
-# desktop_file
+# To Build:
+#
+# vagrant up / vagrant provision
+#
 
 %define install_dir /opt/visualvm
 %define apps_dir /usr/share/applications
 
 # Disable brp-java-repack-jars which is really slow, and not useful for VisualVM.
 %define __jar_repack 0
+# Disable Debug extraction
+%global debug_package %{nil}
 
-Name:		visualvm
-Version:	1.3.9
-Release:	github.0%{?dist}
-Summary:	All-in-One Java Troubleshooting Tool
+Name:	    visualvm
+Version:    1.4.3
+Release:    2
+Summary:    All-in-One Java Troubleshooting Tool
 
-Group:		Development/Tools
-License:	GPLv2
-URL:		https://visualvm.github.io/index.html
-BuildArch:	x86_64
+Group:      Development/Tools
+License:    GPLv2
+URL:        https://visualvm.github.io/index.html
+BuildArch:  noarch
+Source0:    visualvm-%{version}.zip
+Source1:    visualvm.desktop
+Source2:    visualvm-logo.png
 Requires:   java
+Requires:   java-sdk
+BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # Disable automatic dependency processing, so that the rpm package only
-# provides xmind, and not crazy OSGI stuff.
+# provides visualvm
 AutoReqProv: no
 
 %description
@@ -28,6 +36,7 @@ VisualVM is a visual tool integrating commandline JDK tools and lightweight prof
 Designed for both development and production time use.
 
 %prep
+%setup -q -c -n visualvm-%{version}
 
 %build
 
@@ -37,11 +46,17 @@ export QA_RPATHS=255
 
 mkdir -p "%{buildroot}%{install_dir}"
 mkdir -p "%{buildroot}%{apps_dir}"
-mv "%{downloaded_dir}"/* "%{buildroot}%{install_dir}"
-cp "%{desktop_file}" "%{buildroot}%{apps_dir}"
+cp -R visualvm_*/* "%{buildroot}%{install_dir}/"
+
+install    -m 644 %_sourcedir/visualvm.desktop %{buildroot}/%{apps_dir}
 chmod +x "%{buildroot}%{install_dir}/bin/visualvm"
 
 %files
 /*
 
+%changelog
+* Thu Sep 19 2019 Thomas Kriener <thomas@kriener.de> - 1.4.3-2
+- Add dependancy for skd (javac)
 
+* Thu Sep 19 2019 Thomas Kriener <thomas@kriener.de> - 1.4.3-1
+- Use visualvm 1.4.3
