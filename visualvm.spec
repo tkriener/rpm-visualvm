@@ -13,7 +13,7 @@
 
 Name:	    visualvm
 Version:    1.4.3
-Release:    1
+Release:    2
 Summary:    All-in-One Java Troubleshooting Tool
 
 Group:      Development/Tools
@@ -24,6 +24,7 @@ Source0:    visualvm-%{version}.zip
 Source1:    visualvm.desktop
 Source2:    visualvm-logo.png
 Requires:   java
+Requires:   java-sdk
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 # Disable automatic dependency processing, so that the rpm package only
@@ -54,6 +55,8 @@ chmod +x "%{buildroot}%{install_dir}/bin/visualvm"
 /*
 
 %changelog
+* Thu Sep 19 2019 Thomas Kriener <thomas@kriener.de> - 1.4.3-2
+- Add dependancy for skd (javac)
+
 * Thu Sep 19 2019 Thomas Kriener <thomas@kriener.de> - 1.4.3-1
 - Use visualvm 1.4.3
-
